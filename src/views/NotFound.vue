@@ -4,7 +4,7 @@
   v-layout.text-xs-center(column, justify-center, align-center)
     v-flex(xs12, md10)
       .headline.pb-4
-        span {{ $t("notFound") }}
+        span Not found
 </template>
 
 <script lang="ts">
