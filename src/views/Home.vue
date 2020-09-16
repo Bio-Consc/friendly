@@ -1,10 +1,18 @@
 <template lang="pug">
 .v-container.pa-4
-  v-layout
+  v-layout.flex-column
     .form-container
       v-text-field(label='token', v-model='tokenSafe')
       v-text-field(label='id', v-model='idSafe')
       v-btn(:loading='loading', @click='search') Search
+    v-data-table.mt-8(
+      :loading='loading',
+      :headers='headers',
+      disable-pagination,
+      :items='patients',
+      hide-default-footer,
+      dense
+    )
 </template>
 
 <script lang="ts">
@@ -24,6 +32,23 @@ export default class Home extends Vue {
 
   loading = false
 
+  headers = [
+    {
+      text: 'Email',
+      value: 'email',
+    },
+    {
+      text: 'Total data points',
+      value: 'totalDataPoints',
+    },
+    {
+      text: 'Most recent data point',
+      value: 'mostRecentDataPoint',
+    },
+  ]
+
+  patients = [] as any[]
+
   get tokenSafe() {
     return this.token
   }
@@ -41,20 +66,19 @@ export default class Home extends Vue {
   async search() {
     this.loading = true
     try {
-      const patients = (
+      this.patients = (
         await axios.get(
           `https://backend.endobits.com/admin/workspace/${this.id}/patient`,
           {
             headers: {
-              authorization: `Bearer ${this.token}`,
-            },
-            params: {
-              workspaceId: this.id,
+              Authorization: `Bearer ${this.token}`,
             },
           }
         )
-      ).data
-      console.log(patients)
+      ).data.map((v: any) => {
+        v.mostRecentDataPoint = JSON.stringify(v.mostRecentDataPoint)
+        return v
+      })
     } catch (err) {
       console.log(err)
     } finally {
