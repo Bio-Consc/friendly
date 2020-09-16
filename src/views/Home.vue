@@ -43,7 +43,7 @@ export default class Home extends Vue {
     try {
       const patients = (
         await axios.get(
-          `https://backend.endobits.com/workspace/${this.id}/patient`,
+          `https://backend.endobits.com/admin/workspace/${this.id}/patient`,
           {
             headers: {
               authorization: `Bearer ${this.token}`,
